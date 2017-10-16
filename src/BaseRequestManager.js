@@ -1,48 +1,46 @@
-var request = require('request');
+const request = require('request');
+const util = require('util');
+const requestPromise = util.promisify(request);
 
-function BaseRequestManager(settings){
+module.exports = class BaseRequestManager {
+    constructor(settings) {}
 
-}
+    async getNewContent(linksArray) {
+        const promisesList = linksArray.map(link => {
+            return requestPromise(link);
+        });
 
-BaseRequestManager.prototype.getNewContent = function(linksArray){
-    var dataList = []
-    for(var i = 0; i < linksArray.length; i++){
-        var item = new Promise(function(resolve,reject){
-            request(linksArray[i], function(err, response, body) {
-                console.log(response.statusCode + '- contentStealer')
-                resolve(body)
-            })
-        })
-        dataList.push(item);
-    };
-    return Promise.all(dataList);
-
-}
-
-BaseRequestManager.prototype.getTitleLinks = function(requestParams){
-    return new Promise(function(resolve,reject){
-        if(!requestParams){
-            reject();
-        } else {
-            var host = requestParams.host;
-            delete requestParams.host;
-            request({url:host, qs:requestParams}, function(err, response, body) {
-                console.log(response.statusCode + '- contentStealer')
-                resolve(body)
-            })
+        try {
+            const dataList = await Promise.all(promisesList);
+        } catch (err) {
+            console.error(`Error in getNewContent: ${err}`);
+            return [];
         }
-    });
-}
 
-BaseRequestManager.prototype.isWeekend = function(){
-    var date = new Date();
-    var day = date.getDay();
-    console.log(day);
-    return day === 0 || day === 6;
-}
+        return dataList.map(response => response.body);
+    }
 
-BaseRequestManager.prototype.token = null;
+    async getTitleLinks(requestParams) {
+        if (!requestParams) throw new TypeError('Invalid requestParams');
 
-BaseRequestManager.prototype.host = null;
+        const { host } = requestParams;
+        delete requestParams.host;
 
-module.exports = BaseRequestManager;
+        try {
+            const response = await requestPromise({
+                url: host,
+                qs: requestParams
+            });
+            return response.body;
+        } catch (err) {
+            console.error(`Error in getTitleLinks: ${err}`);
+            return [];
+        }
+    }
+
+    isWeekend() {
+        const day = new Date().getDay();
+        console.log(day);
+        return day === 0 || day === 6;
+    }
+};

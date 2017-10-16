@@ -1,62 +1,63 @@
- var fs = require("fs"),
-	_ = require('lodash');
+const fs = require('fs');
+const _ = require('lodash');
 
-function FileManager(){
-	console.log('FileManager created')
-}
-
-FileManager.prototype.readDataFromFile = function(path){
-    var content = null;
-
-    try{
-        var content = fs.readFileSync(path, 'utf8');
-    } catch (error){
-        console.error(error);
+class FileManager {
+    constructor() {
+        console.log('FileManager created');
     }
-    return content;
+
+    readDataFromFile(path) {
+        let content = null;
+
+        try {
+            content = fs.readFileSync(path, 'utf8');
+        } catch (error) {
+            console.error(error);
+        }
+        return content;
+    }
+
+    readDataFromJson(path) {
+        let content = this.readDataFromFile(path);
+
+        try {
+            content = JSON.parse(content);
+        } catch (error) {
+            console.error(error);
+        }
+        return content;
+    }
+
+    readStringFromFile(filePath) {
+        let result = this.readDataFromFile(filePath);
+
+        if (result) {
+            const lines = result.split('\r\n');
+            result = lines.splice(0, 1)[0];
+            fs.writeFileSync(filePath, lines.join('\r\n'));
+        }
+
+        return result;
+    }
+
+    getOldTitlesFromFile(filePath) {
+        const result = this.readDataFromFile(filePath);
+        let lines = [];
+
+        if (result) {
+            lines = result.split('\r\n');
+        }
+        return lines;
+    }
+
+    addNewArrayDataFile(newData, filePath) {
+        const result = this.readDataFromFile(filePath);
+        if (result) {
+            let lines = result.split('\r\n');
+            lines = newData.concat(lines);
+            fs.writeFileSync(filePath, lines.join('\r\n'));
+        }
+    }
 }
 
- FileManager.prototype.readDataFromJson = function(path){
-     var content = this.readDataFromFile(path);
-
-     try{
-         content = JSON.parse(content);
-     } catch (error){
-         console.error(error);
-     }
-     return content;
- }
-
- FileManager.prototype.readStringFromFile = function(filePath){
-     var result = this.readDataFromFile(filePath);
-     if(result){
-         var lines = result.split('\r\n'),
-             result = lines.splice(0,1)[0];
-         fs.writeFileSync(filePath, lines.join('\r\n'));
-     }
-
-     return result;
-
- }
-
- FileManager.prototype.getOldTitlesFromFile = function(filePath){
-     var result = this.readDataFromFile(filePath),
-         lines = [];
-     if(result){
-         lines = result.split('\r\n');
-     }
-     return lines;
- }
-
- FileManager.prototype.addNewArrayDataFile = function(newData, filePath){
-     var result = this.readDataFromFile(filePath);
-     if(result){
-         var lines = result.split('\r\n');
-         lines = newData.concat(lines);
-         fs.writeFileSync(filePath, lines.join('\r\n'));
-     }
- }
-
-var fileManager = new FileManager();
-
-module.exports = fileManager;
+module.exports = new FileManager();

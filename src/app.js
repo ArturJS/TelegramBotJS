@@ -1,30 +1,29 @@
-var fileManager = require('./fileManager'),
-		PosterBot = require('./PosterBot')
-		UserBot = require('./UserBot');
+const fileManager = require('./fileManager');
+const PosterBot = require('./PosterBot');
+const UserBot = require('./UserBot');
 
+const settings = fileManager.readDataFromJson('./settings/settings.json');
+const publicsList = fileManager.readDataFromJson('./settings/vkpublic.json');
+const stealerSettings = fileManager.readDataFromJson(
+    './settings/contentStealer.json'
+);
+const channelsList = fileManager.readDataFromJson(
+    './settings/telegramchannel.json'
+);
 
-var settingFile = './settings/settings.json',
-		publicsFile = './settings/vkpublic.json',
-		contentStealerFile = './settings/contentStealer.json',
-		channelsFile = './settings/telegramchannel.json'
-		settings = fileManager.readDataFromJson(settingFile),
-		publicsList = fileManager.readDataFromJson(publicsFile),
-		stealerSettings = fileManager.readDataFromJson(contentStealerFile),
-		channelsList = fileManager.readDataFromJson(channelsFile);
+if (settings) {
+    const commonSettings = {
+        settings,
+        publicsList,
+        stealerSettings,
+        channelsList
+    };
 
-if(settings){
-	var commonSettings = {
-		settings: settings,
-		publicsList: publicsList,
-		stealerSettings: stealerSettings,
-		channelsList: channelsList
-	}
+    const posterBot = new PosterBot(commonSettings);
+    posterBot.startBot();
 
-	var posterBot = new PosterBot(commonSettings);
-	posterBot.startBot();
-
-	if(settings.telegramSettings){
-		var userBot = new UserBot(settings.telegramSettings);
-		userBot.startBot();
-	}
+    if (settings.telegramSettings) {
+        const userBot = new UserBot(settings.telegramSettings);
+        userBot.startBot();
+    }
 }

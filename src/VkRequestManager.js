@@ -1,27 +1,27 @@
-var inherit = require('./inherit'),
-    request = require('request'),
-    BaseRequestManager = require('./BaseRequestManager');
+const request = require('request');
+const BaseRequestManager = require('./BaseRequestManager');
 
+module.exports = class VkRequestManager extends BaseRequestManager {
+    constructor(settings) {
+        this.token = settings.token;
+        this.host = 'https://api.vk.com/method/wall.post';
+        this.postFromGroup = 1;
+    }
 
-function VkRequestManager (settings){
-    this.token = settings.token;
-    this.host = "https://api.vk.com/method/wall.post"
-    this.postFromGroup = 1;
-}
+    postData(post, publicId) {
+        const propertiesObject = {
+            owner_id: `-${publicId}`,
+            access_token: this.token,
+            from_group: this.postFromGroup,
+            message: post.message,
+            attachment: post.link
+        };
 
-inherit(BaseRequestManager, VkRequestManager)
-
-VkRequestManager.prototype.postData = function(post, publicId){
-    var propertiesObject = {
-        owner_id:'-' + publicId,
-        access_token:this.token,
-        from_group: this.postFromGroup,
-        message: post.message,
-        attachment: post.link };
-
-    request({url:this.host, qs:propertiesObject}, function(err, response, body) {
-        console.log(response.statusCode + ' - ' + post.link)
-    })
-}
-
-module.exports = VkRequestManager;
+        request(
+            { url: this.host, qs: propertiesObject },
+            (err, response, body) => {
+                console.log(`${response.statusCode} - ${post.link}`);
+            }
+        );
+    }
+};

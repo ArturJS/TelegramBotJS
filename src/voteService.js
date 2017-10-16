@@ -1,3 +1,3 @@
-var fileManager = require('./fileManager');
+const fileManager = require('./fileManager');
 
-var posts = {};
+const posts = {};

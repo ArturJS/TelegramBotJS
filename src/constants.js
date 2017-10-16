@@ -1,5 +1,5 @@
 module.exports = {
-	links: 'links',
-	photo: 'photo',
-	video: 'video'
-}
+    links: 'links',
+    photo: 'photo',
+    video: 'video'
+};
