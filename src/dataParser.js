@@ -1,6 +1,5 @@
 const constants = require('./constants');
 const _ = require('lodash');
-const shuffle = require('lodash.shuffle');
 const jsdom = require('jsdom').jsdom;
 const myWindow = jsdom().defaultView;
 const $ = require('jquery')(myWindow);
@@ -86,6 +85,6 @@ module.exports = {
     },
 
     shuffleArray(data) {
-        return shuffle(data);
+        return _.shuffle(data);
     }
 };
