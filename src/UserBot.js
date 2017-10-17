@@ -116,7 +116,7 @@ function processResponse(data, host) {
 function getCommandParams(text) {
     const commandEnd = text.indexOf(' ');
     let command;
-    const text;
+    let text;
     if (commandEnd < 0) {
         command = text.substr(1);
         text = '';

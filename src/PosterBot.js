@@ -52,7 +52,7 @@ module.exports = class PosterBot {
             this.scheduler.setTelegramPostTimer(this.channelsList);
         }
         if (this.stealerSettings) {
-            for (prop in this.stealerSettings) {
+            for (let prop in this.stealerSettings) {
                 this.scheduler.setContentStealerTimer(
                     this.stealerSettings[prop]
                 );

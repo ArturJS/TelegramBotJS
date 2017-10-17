@@ -3,6 +3,7 @@ const BaseRequestManager = require('./BaseRequestManager');
 
 module.exports = class VkRequestManager extends BaseRequestManager {
     constructor(settings) {
+        super(settings);
         this.token = settings.token;
         this.host = 'https://api.vk.com/method/wall.post';
         this.postFromGroup = 1;
