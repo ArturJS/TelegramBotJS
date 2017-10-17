@@ -34,7 +34,7 @@ module.exports = class TelegramRequestManager extends BaseRequestManager {
     }
 
     updateMessage(prop) {
-        const url = that.host + 'editMessageText';
+        const url = this.host + 'editMessageText';
 
         request.post({ url, form: prop }, (err, response, body) => {
             if (err) {

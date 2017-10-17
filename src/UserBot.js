@@ -1,5 +1,5 @@
 const request = require('request');
-const events = require('./events');
+const mediator = require('./mediator');
 
 const adminId = 'name';
 let updateId = 0;
@@ -17,7 +17,7 @@ const handlers = {
         );
     },
     hello(host, chat_id, text) {
-        events.raise('hello', { chat_id, host, text });
+        mediator.emit('hello', { chat_id, host, text });
         const keyboard = {
             keyboard: [[{ text: '123' }, { text: '456' }]],
             one_time_keyboard: true
@@ -37,7 +37,7 @@ const handlers = {
         );
     },
     line(host, chat_id, text) {
-        events.raise('hello', { chat_id, host, text });
+        mediator.emit('hello', { chat_id, host, text });
         const keyboard = {
             inline_keyboard: [
                 [
@@ -62,14 +62,14 @@ const handlers = {
         );
     },
     removeLast(host, chat_id, channelId) {
-        events.raise('removeLast', {
+        mediator.emit('removeLast', {
             channelId,
             chat_id,
             host
         });
     },
     getchannelstimes(host, chat_id, channelId) {
-        events.raise('getChannelsTimes', {
+        mediator.emit('getChannelsTimes', {
             channelId,
             chat_id,
             host

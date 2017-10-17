@@ -1,5 +1,5 @@
 const Scheduler = require('./scheduler');
-const events = require('./events');
+const mediator = require('./mediator');
 
 module.exports = class PosterBot {
     constructor(commonSettings) {
@@ -23,7 +23,7 @@ module.exports = class PosterBot {
     attachEvents() {
         const that = this;
 
-        events.on('removeLast', params => {
+        mediator.on('removeLast', params => {
             console.log('REMOOOVE');
             that.scheduler.removeLastPostTelegram(
                 params.channelId,
@@ -32,7 +32,7 @@ module.exports = class PosterBot {
             );
         });
 
-        events.on('getChannelsTimes', params => {
+        mediator.on('getChannelsTimes', params => {
             console.log('getChannelsTimes');
             that.scheduler.getChannelsTimes(
                 '@testChannelJem',
